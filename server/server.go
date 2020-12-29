@@ -31,11 +31,12 @@ func CreatePort(num string) {
 			fmt.Println("coming")
 		}
 
-		go handle(conn)
+		channel := make(chan string)
+		go handle(conn, channel)
 	}
 }
 
-func handle(conn net.Conn) {
+func handle(conn net.Conn, channel chan string) {
 	var i int
 	scanner := bufio.NewScanner(conn)
 	fmt.Fprintf(conn, welcome+"\n"+"[ENTER YOUR NAME]:")
@@ -51,6 +52,7 @@ func handle(conn net.Conn) {
 			i = len(Users)
 		}
 		Users[i] = user
+		fmt.Printf("%v has joined our chat...\n", Users[i].Name)
 		break
 	}
 	now := time.Now()
@@ -67,7 +69,7 @@ func handle(conn net.Conn) {
 		fmt.Fprintf(conn, "[%s][%v]: ", now.Format("2006-Jan-02 03:04:05"), Users[i].Name)
 	}
 
-	fmt.Println(Users)
+	fmt.Printf("%v has left our chat...\n", Users[i].Name)
 
 	defer conn.Close()
 
