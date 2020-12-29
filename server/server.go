@@ -60,7 +60,8 @@ func handle(conn net.Conn) {
 		now := time.Now()
 		ln := scanner.Text()
 		fmt.Printf("[%s][%v]: %s\n", now.Format("2006-Jan-02 03:04:05"), Users[i].Name, ln)
-		fmt.Fprintf(conn, "%s\n", Users[i])
+		Users[i].History[now.Format("2006-Jan-02 03:04:05")] = ln
+		fmt.Fprintf(conn, "[%s][%v]: %s\n", now.Format("2006-Jan-02 03:04:05"), Users[i].Name, ln)
 	}
 
 	defer conn.Close()
