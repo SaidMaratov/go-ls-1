@@ -51,8 +51,6 @@ func handle(conn net.Conn) {
 			i = len(Users)
 		}
 		Users[i] = user
-		// fmt.Fprintf(conn, "Hello, %s\n", Users[i].Name)
-		// fmt.Println(Users)
 		break
 	}
 	now := time.Now()
@@ -64,10 +62,8 @@ func handle(conn net.Conn) {
 		ln := scanner.Text()
 
 		fmt.Printf("[%s][%v]: %s\n", now.Format("2006-Jan-02 03:04:05"), Users[i].Name, ln)
-		// Users[i].History[now.Format("2006-Jan-02 03:04:05")] = ln
 		Users[i].History[time.Now()] = ln
 
-		// fmt.Fprintf(conn, "[%s][%v]: %s\n", now.Format("2006-Jan-02 03:04:05"), Users[i].Name, ln)
 		fmt.Fprintf(conn, "[%s][%v]: ", now.Format("2006-Jan-02 03:04:05"), Users[i].Name)
 	}
 
