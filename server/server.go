@@ -30,7 +30,7 @@ func CreatePort(num string) {
 		if conn != nil {
 			fmt.Println("coming")
 		}
-		fmt.Fprintf(conn, "%s\n", Users)
+
 		go handle(conn)
 	}
 }
@@ -43,7 +43,7 @@ func handle(conn net.Conn) {
 	for scanner.Scan() {
 
 		name := scanner.Text()
-		user := authorization.CreateNewAccount(name, "has joined our chat...")
+		user := authorization.CreateNewAccount(name)
 		if Users == nil {
 			Users = make(map[int]authorization.User)
 			i = 0
@@ -52,15 +52,15 @@ func handle(conn net.Conn) {
 		}
 		Users[i] = user
 		fmt.Fprintf(conn, "Hello, %s\n", Users[i])
-		// fmt.Fprintf(conn, "%s has joined our chat...\n", Users[i])
+		//fmt.Fprintf(conn, "%s has joined our chat...\n", Users[i])
 		fmt.Println(Users)
 		break
 	}
 	for scanner.Scan() {
+		now := time.Now()
 		ln := scanner.Text()
-		fmt.Printf("%v - %s\n", Users[i], ln)
-		Users[i].History[time.Now()] = ln
-		fmt.Fprintf(conn, "%s\n", Users[i].Name)
+		fmt.Printf("[%s][%v]: %s\n", now.Format("2006-Jan-02 03:04:05"), Users[i].Name, ln)
+		fmt.Fprintf(conn, "%s\n", Users[i])
 	}
 
 	defer conn.Close()

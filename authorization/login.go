@@ -8,10 +8,11 @@ type User struct {
 	History map[string]string
 }
 
-func CreateNewAccount(name string, message string) User {
+func CreateNewAccount(name string) User {
 	now := time.Now()
 	newHistory := make(map[string]string)
-	newHistory[now.Format("2006-Jan-02 Monday 03:04:05")] = message
+
+	newHistory[now.Format("2006-Jan-02 03:04:05")] = " has joined our chat..."
 
 	newUser := User{
 		Name:    name,
@@ -20,3 +21,17 @@ func CreateNewAccount(name string, message string) User {
 
 	return newUser
 }
+
+// func CreateNewMessage(date string, message string) User {
+// 	now := time.Now()
+// 	newHistory := make(map[string]string)
+
+// 	newHistory[now.Format("2006-Jan-02 03:04:05")] = " has joined our chat..."
+
+// 	newUser := User{
+// 		Name:    name,
+// 		History: newHistory,
+// 	}
+
+// 	return newUser
+// }
