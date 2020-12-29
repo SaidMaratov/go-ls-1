@@ -1,14 +1,21 @@
 package authorization
 
+import "time"
+
 type User struct {
 	// Id   int
-	Name string
+	Name    string
+	History map[time.Time]string
 }
 
-func CreateNewAccount(name string) User {
-	// newId := 0
+func CreateNewAccount(name string, message string) User {
+
+	newHistory := make(map[time.Time]string)
+	newHistory[time.Now()] = message
+
 	newUser := User{
-		Name: name,
+		Name:    name,
+		History: newHistory,
 	}
 
 	return newUser
