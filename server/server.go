@@ -7,13 +7,15 @@ import (
 	"net"
 )
 
+const welcome = "Welcome to TCP-Chat!"
+
 func CreatePort(num string) {
 	li, err := net.Listen("tcp", num)
 	if err != nil {
 		log.Fatalln(err)
 	}
 	defer li.Close()
-
+	fmt.Println("Server is Listening", num)
 	for {
 		conn, err := li.Accept()
 		if err != nil {
@@ -26,15 +28,20 @@ func CreatePort(num string) {
 
 func handle(conn net.Conn) {
 	scanner := bufio.NewScanner(conn)
+	fmt.Fprintf(conn, welcome+"\n"+"[ENTER YOUR NAME]:")
+	// посмотреть позже
+	for scanner.Scan() {
+		name := scanner.Text()
+		fmt.Fprintf(conn, "Hello, %s\n", name)
+		fmt.Fprintf(conn, "%s has joined our chat...\n", name)
+		break
+	}
 	for scanner.Scan() {
 		ln := scanner.Text()
 		fmt.Println(ln)
-		fmt.Fprintf(conn, "I heard you say: %s\n", ln)
+		fmt.Fprintf(conn, "someone: %s\n", ln)
 	}
 	defer conn.Close()
 
-	// we never get here
-	// we have an open stream connection
-	// how does the above reader know when it's done?
 	fmt.Println("Code got here.")
 }
