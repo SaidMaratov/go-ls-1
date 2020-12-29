@@ -1,1 +1,2 @@
-# my-ls-1
+# go-ls-1
+implemented ls command in golang
