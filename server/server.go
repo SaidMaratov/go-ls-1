@@ -28,7 +28,7 @@ func CreatePort(num string) {
 			continue
 		}
 		if conn == nil {
-			fmt.Fprintf(conn, "Empty message, write something")
+			fmt.Fprintf(conn, "Empty message, write something") //fix
 		}
 		go handle(conn)
 	}
@@ -59,10 +59,10 @@ func handle(conn net.Conn) {
 	for scanner.Scan() {
 		now = time.Now()
 
-		ln := scanner.Text()
+		message := scanner.Text()
 
-		fmt.Printf("[%s][%v]: %s\n", now.Format("2006-Jan-02 03:04:05"), Users[i].Name, ln)
-		Users[i].History[time.Now()] = ln
+		fmt.Printf("[%s][%v]: %s\n", now.Format("2006-Jan-02 03:04:05"), Users[i].Name, message)
+		Users[i].History[time.Now()] = message
 
 		fmt.Fprintf(conn, "[%s][%v]: ", now.Format("2006-Jan-02 03:04:05"), Users[i].Name)
 	}
