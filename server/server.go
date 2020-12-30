@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"net"
+	"sync"
 	"time"
 
 	"../authorization"
@@ -22,6 +23,7 @@ func CreatePort(num string) {
 	defer li.Close()
 	fmt.Println("Server is Listening", num)
 	for {
+		var mutex sync.Mutex
 		conn, err := li.Accept()
 		if err != nil {
 			log.Println(err)
@@ -30,11 +32,13 @@ func CreatePort(num string) {
 		if conn == nil {
 			fmt.Fprintf(conn, "Empty message, write something") //fix
 		}
-		go handle(conn)
+		c := make(chan string)
+		go handle(conn, c, &mutex)
+		fmt.Println(<-c)
 	}
 }
 
-func handle(conn net.Conn) {
+func handle(conn net.Conn, channel chan string, mutex *sync.Mutex) {
 	var i int
 	scanner := bufio.NewScanner(conn)
 	fmt.Fprintf(conn, welcome+"\n"+"[ENTER YOUR NAME]:")
@@ -50,7 +54,9 @@ func handle(conn net.Conn) {
 			i = len(Users)
 		}
 		Users[i] = user
-		fmt.Printf("%v has joined our chat...\n", Users[i].Name)
+		welcomeMessage := fmt.Sprintf("%v has joined our chat...\n", Users[i].Name)
+		fmt.Println(welcomeMessage)
+		//channel <- welcomeMessage
 		break
 	}
 	now := time.Now()
@@ -60,10 +66,11 @@ func handle(conn net.Conn) {
 		now = time.Now()
 
 		message := scanner.Text()
-
+		//mes := <-channel
+		//fmt.Fprintf(conn, "%s", mes)
 		fmt.Printf("[%s][%v]: %s\n", now.Format("2006-Jan-02 03:04:05"), Users[i].Name, message)
 		Users[i].History[time.Now()] = message
-
+		//channel <- Users[i].History[time.Now()]
 		fmt.Fprintf(conn, "[%s][%v]: ", now.Format("2006-Jan-02 03:04:05"), Users[i].Name)
 	}
 
