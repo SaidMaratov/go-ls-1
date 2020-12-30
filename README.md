@@ -2,6 +2,9 @@
 
 implemented ls command in golang
 
+### Programming Language
+  - Golang
+  
 # Usage
 
 ```
