@@ -1,6 +1,16 @@
 # go-ls-1
 
-implemented ls command in golang
+### Summary
+  - Manipulation of structures.
+  - Net-Cat
+  - TCP/UDP
+  -     TCP/UDP connection
+  -     TCP/UDP socket
+  - Channels
+  - Goroutines
+  - Mutexes
+  - IP and ports
+
 
 ### Programming Language
   - Golang
