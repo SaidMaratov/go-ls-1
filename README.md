@@ -11,10 +11,6 @@
   - Mutexes
   - IP and ports
 
-
-### Programming Language
-  - Golang
-  
 ### Usage
 
 ```
