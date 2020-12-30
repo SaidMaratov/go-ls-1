@@ -18,6 +18,6 @@
 # Usage
 
 ```
-[USAGE]:go build 
-[USAGE]:./go-ls-1 $port
+$ [USAGE]:go build 
+$ [USAGE]:./go-ls-1 $port
 ```
