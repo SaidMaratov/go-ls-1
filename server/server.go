@@ -27,10 +27,9 @@ func CreatePort(num string) {
 			log.Println(err)
 			continue
 		}
-		if conn != nil {
-			fmt.Println("coming")
+		if conn == nil {
+			fmt.Fprintf(conn, "Empty message, write something")
 		}
-
 		go handle(conn)
 	}
 }
@@ -51,6 +50,7 @@ func handle(conn net.Conn) {
 			i = len(Users)
 		}
 		Users[i] = user
+		fmt.Printf("%v has joined our chat...\n", Users[i].Name)
 		break
 	}
 	now := time.Now()
@@ -67,7 +67,7 @@ func handle(conn net.Conn) {
 		fmt.Fprintf(conn, "[%s][%v]: ", now.Format("2006-Jan-02 03:04:05"), Users[i].Name)
 	}
 
-	fmt.Println(Users)
+	fmt.Printf("%v has left our chat...\n", Users[i].Name)
 
 	defer conn.Close()
 
