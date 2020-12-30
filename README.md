@@ -4,8 +4,8 @@
   - Manipulation of structures.
   - Net-Cat
   - TCP/UDP
-  -     TCP/UDP connection
-  -     TCP/UDP socket
+    - TCP/UDP connection
+    - TCP/UDP socket
   - Channels
   - Goroutines
   - Mutexes
