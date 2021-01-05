@@ -16,7 +16,7 @@ type client struct {
 
 func (c *client) readInput() {
 	for {
-		msg, err := bufio.NewReader(c * conn).ReadString('\n')
+		msg, err := bufio.NewReader(c.conn).ReadString('\n')
 		if err != nil {
 			return
 		}
