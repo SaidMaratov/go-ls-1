@@ -16,10 +16,13 @@ type client struct {
 
 func (c *client) readInput() {
 	for {
+
+		fmt.Fprintf(c.conn, welcomeIcon+"\n"+"[ENTER YOUR NAME]:")
 		msg, err := bufio.NewReader(c.conn).ReadString('\n')
 		if err != nil {
 			return
 		}
+
 		msg = strings.Trim(msg, "\r\n")
 
 		args := strings.Split(msg, " ")

@@ -14,6 +14,8 @@ import (
 
 var Users map[int]authorization.User
 
+var now = time.Now()
+
 type server struct {
 	rooms    map[string]*room
 	commands chan command
@@ -28,6 +30,7 @@ func newServer() *server {
 
 func (s *server) newClient(conn net.Conn) {
 	log.Printf("new client has connected: %s", conn.RemoteAddr().String())
+
 	c := &client{
 		conn:     conn,
 		nick:     "anonymous",
@@ -93,7 +96,7 @@ func (s *server) msg(c *client, args []string) {
 func (s *server) quit(c *client, args []string) {
 	log.Printf("client has disconnected: %s", c.conn.RemoteAddr().String())
 	s.quitCurrentRoom(c)
-	c.msg("sad see you go :(")
+	c.msg("poshel nahui")
 	c.conn.Close()
 }
 
@@ -124,7 +127,7 @@ func CreatePort(num string) {
 		}
 		go s.newClient(conn)
 
-		go handle(conn)
+		//go handle(conn)
 
 	}
 }
