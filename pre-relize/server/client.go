@@ -16,7 +16,7 @@ type client struct {
 
 func (c *client) readInput() {
 
-	fmt.Fprintf(c.conn, welcomeIcon+"\n"+"Manuals:\n\n"+"/nick - nickname\n"+"/rooms - the list of available rooms\n"+"/join - to create a new room or join the available room\n"+"/quit - leave the room\n\n"+"[ENTER YOUR NAME]:")
+	fmt.Fprintf(c.conn, welcomeIcon+"\n"+"Manual:\n\n"+"/nick - nickname\n"+"/rooms - the list of available rooms\n"+"/join - to create a new room or join the available room\n"+"/quit - leave the room\n\n"+"[ENTER YOUR NAME]:")
 
 	for {
 
@@ -50,12 +50,6 @@ func (c *client) readInput() {
 				client: c,
 				args:   args,
 			}
-		// case "/msg":
-		// 	c.commands <- command{
-		// 		id:     CMD_MSG,
-		// 		client: c,
-		// 		args:   args,
-		// 	}
 		case "/quit":
 			c.commands <- command{
 				id:     CMD_QUIT,
@@ -75,6 +69,7 @@ func (c *client) readInput() {
 		}
 
 	}
+
 }
 
 func (c *client) err(err error) {
