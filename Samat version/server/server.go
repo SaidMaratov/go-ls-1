@@ -12,6 +12,7 @@ import (
 )
 
 var Users map[int]authorization.User
+var History map[time.Time]string
 
 func CreatePort(port string) {
 	li, err := net.Listen("tcp", port)

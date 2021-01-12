@@ -78,6 +78,10 @@ func (s *server) join(c *client, args []string) {
 }
 
 func (s *server) listRooms(c *client, args []string) {
+	if len(s.rooms) == 0 {
+		c.msg("There is no room here. Please create a room!")
+		return
+	}
 	var rooms []string
 	for name := range s.rooms {
 		rooms = append(rooms, name)
@@ -90,7 +94,7 @@ func (s *server) msg(c *client, args []string) {
 		c.err(errors.New("You must join the room first"))
 		return
 	}
-	c.room.broadcast(c, c.nick+": "+strings.Join(args[1:len(args)], " "))
+	c.room.broadcast(c, c.nick+": "+strings.Join(args, " "))
 }
 
 func (s *server) quit(c *client, args []string) {
