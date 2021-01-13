@@ -1,18 +1,13 @@
 package server
 
 import (
-	"bufio"
 	"errors"
 	"fmt"
 	"log"
 	"net"
 	"strings"
 	"time"
-
-	"../authorization"
 )
-
-var Users map[int]authorization.User
 
 var now = time.Now()
 
@@ -58,7 +53,6 @@ func (s *server) run() {
 func (s *server) nick(c *client, args []string) {
 	c.nick = args[1]
 	c.msg(fmt.Sprintf("all right, i will call you %s\n", c.nick))
-	c.msg("[" + now.Format("2006-Jan-02 03:04:05") + "][" + c.nick + "]:")
 }
 
 func (s *server) join(c *client, args []string) {
@@ -66,7 +60,6 @@ func (s *server) join(c *client, args []string) {
 
 	if (c.room != nil) && (c.room.name == roomName) {
 		c.msg(fmt.Sprintf("You are already in the %s\n", c.room.name))
-		c.msg("[" + now.Format("2006-Jan-02 03:04:05") + "][" + c.nick + "]:")
 		return
 	}
 
@@ -86,21 +79,20 @@ func (s *server) join(c *client, args []string) {
 	c.room = r
 
 	s.writeToFile(c.room, c.nick+" has joined the room")
-	r.broadcast(c, fmt.Sprintf("%s has joined the room", c.nick))
+	r.broadcast(c, fmt.Sprintf("\n%s has joined the room", c.nick))
 	c.msg(fmt.Sprintf("\nwelcome to %s\n", r.name))
-	c.msg("[" + now.Format("2006-Jan-02 03:04:05") + "][" + c.nick + "]:")
 }
 
 func (s *server) listRooms(c *client, args []string) {
 	if len(s.rooms) == 0 {
-		c.msg("There is no room here. Please create a room!")
+		c.msg("There is no room here. Please create a room!\n")
 		return
 	}
 	var rooms []string
 	for name := range s.rooms {
 		rooms = append(rooms, name)
 	}
-	c.msg(fmt.Sprintf("available rooms are: %s", strings.Join(rooms, ", ")))
+	c.msg(fmt.Sprintf("available rooms are: %s\n", strings.Join(rooms, ", ")))
 }
 
 func (s *server) msg(c *client, args []string) {
@@ -116,14 +108,14 @@ func (s *server) msg(c *client, args []string) {
 func (s *server) quit(c *client, args []string) {
 	log.Printf("client has disconnected: %s", c.conn.RemoteAddr().String())
 	s.quitCurrentRoom(c)
-	c.msg("You've leaved the server!")
+	c.msg("You've leaved the server!\n")
 	c.conn.Close()
 }
 
 func (s *server) quitCurrentRoom(c *client) {
 	if c.room != nil {
 		delete(c.room.members, c.conn.RemoteAddr())
-		c.room.broadcast(c, fmt.Sprintf("%s has left the room", c.nick))
+		c.room.broadcast(c, fmt.Sprintf("\n%s has left the room", c.nick))
 		s.writeToFile(c.room, c.nick+" has left the room")
 		c.room = &room{}
 	}
@@ -149,55 +141,5 @@ func CreatePort(num string) {
 		}
 		go s.newClient(conn)
 
-		//go handle(conn)
-
 	}
-	fmt.Println("Server is dead")
-}
-
-func handle(conn net.Conn) {
-	var i int
-	scanner := bufio.NewScanner(conn)
-	fmt.Fprintf(conn, welcomeIcon+"\n"+"[ENTER YOUR NAME]:")
-	// посмотреть позже
-
-	for scanner.Scan() {
-
-		name := scanner.Text()
-		user := authorization.CreateNewAccount(name)
-		if Users == nil {
-			Users = make(map[int]authorization.User)
-			i = 0
-		} else {
-			i = len(Users)
-		}
-		Users[i] = user
-		welcomeMessage := fmt.Sprintf("%v has joined our chat...\n", Users[i].Name)
-		fmt.Println(welcomeMessage)
-		//channel <- welcomeMessage
-		break
-	}
-	now := time.Now()
-	fmt.Fprintf(conn, "[%s][%v]: ", now.Format("2006-Jan-02 03:04:05"), Users[i].Name)
-
-	for scanner.Scan() {
-		now = time.Now()
-
-		message := scanner.Text()
-		//mes := <-channel
-		//fmt.Fprintf(conn, "%s", mes)
-		//fmt.Printf("[%s][%v]: %s\n", now.Format("2006-Jan-02 03:04:05"), Users[i].Name, message)
-		Users[i].History[time.Now()] = message
-		//channel <- fmt.Sprintf("[%v][%v]: %s", now.Format("2006-Jan-02 03:04:05"), Users[i].Name, message)
-		//fmt.Print(Users[i].History[time.Now()])
-		//channel <- Users[i].History[time.Now()]
-
-		fmt.Fprintf(conn, "[%s][%v]: ", now.Format("2006-Jan-02 03:04:05"), Users[i].Name)
-	}
-
-	fmt.Printf("%v has left our chat...\n", Users[i].Name)
-
-	defer conn.Close()
-
-	fmt.Println("Code got here.")
 }

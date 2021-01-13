@@ -74,10 +74,12 @@ func (c *client) readInput() {
 }
 
 func (c *client) err(err error) {
-	c.conn.Write([]byte("ERR: " + err.Error() + "\n"))
-	c.msg("[" + now.Format("2006-Jan-02 03:04:05") + "][" + c.nick + "]:")
+	c.msg("ERR: " + err.Error() + "\n")
 }
 
 func (c *client) msg(msg string) {
-	c.conn.Write([]byte(msg))
+	if len(msg) != 0 {
+		c.conn.Write([]byte(msg))
+	}
+	c.conn.Write([]byte("[" + now.Format("2006-Jan-02 03:04:05") + "][" + c.nick + "]:"))
 }
