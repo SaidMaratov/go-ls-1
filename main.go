@@ -7,6 +7,12 @@ import (
 )
 
 func main() {
+	var ip string
 	args := os.Args[1:]
-	server.CreatePort(args[0])
+	if len(args) == 0 {
+		ip = ":8989"
+	} else {
+		ip = args[0]
+	}
+	server.CreatePort(ip)
 }
