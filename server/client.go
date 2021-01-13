@@ -19,7 +19,7 @@ func (c *client) readInput() {
 	fmt.Fprintf(c.conn, welcomeIcon+"\n"+"Manual:\n\n"+"/nick - nickname\n"+"/rooms - the list of available rooms\n"+"/join - to create a new room or join the available room\n"+"/quit - leave the room\n\n"+"[ENTER YOUR NAME]:")
 
 	for {
-
+		fmt.Sprint("[" + now.Format("2006-Jan-02 03:04:05") + "][" + c.nick + "]: ")
 		msg, err := bufio.NewReader(c.conn).ReadString('\n')
 		if err != nil {
 			return
@@ -30,6 +30,8 @@ func (c *client) readInput() {
 		args := strings.Split(msg, " ")
 
 		cmd := strings.TrimSpace(args[0])
+
+		c.msg(fmt.Sprint("[" + now.Format("2006-Jan-02 03:04:05") + "][" + c.nick + "]: " + strings.Join(args, " ")))
 
 		switch cmd {
 		case "/nick":
@@ -75,6 +77,7 @@ func (c *client) readInput() {
 func (c *client) err(err error) {
 	c.conn.Write([]byte("ERR: " + err.Error() + "\n"))
 }
+
 func (c *client) msg(msg string) {
-	c.conn.Write([]byte("> " + msg + "\n"))
+	c.conn.Write([]byte(msg + "\n"))
 }

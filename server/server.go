@@ -62,6 +62,12 @@ func (s *server) nick(c *client, args []string) {
 
 func (s *server) join(c *client, args []string) {
 	roomName := args[1]
+
+	if (c.room != nil) && (c.room.name == roomName) {
+		c.msg(fmt.Sprintf("You are already in the %s", c.room.name))
+		return
+	}
+
 	r, ok := s.rooms[roomName]
 	if !ok {
 		r = &room{
@@ -115,6 +121,7 @@ func (s *server) quitCurrentRoom(c *client) {
 	if c.room != nil {
 		delete(c.room.members, c.conn.RemoteAddr())
 		c.room.broadcast(c, fmt.Sprintf("%s has left the room", c.nick))
+		s.writeToFile(c.room, c.nick+" has left the room")
 		c.room = &room{}
 	}
 }
