@@ -57,14 +57,16 @@ func (s *server) run() {
 }
 func (s *server) nick(c *client, args []string) {
 	c.nick = args[1]
-	c.msg(fmt.Sprintf("all right, i will call you %s", c.nick))
+	c.msg(fmt.Sprintf("all right, i will call you %s\n", c.nick))
+	c.msg("[" + now.Format("2006-Jan-02 03:04:05") + "][" + c.nick + "]:")
 }
 
 func (s *server) join(c *client, args []string) {
 	roomName := args[1]
 
 	if (c.room != nil) && (c.room.name == roomName) {
-		c.msg(fmt.Sprintf("You are already in the %s", c.room.name))
+		c.msg(fmt.Sprintf("You are already in the %s\n", c.room.name))
+		c.msg("[" + now.Format("2006-Jan-02 03:04:05") + "][" + c.nick + "]:")
 		return
 	}
 
@@ -85,7 +87,8 @@ func (s *server) join(c *client, args []string) {
 
 	s.writeToFile(c.room, c.nick+" has joined the room")
 	r.broadcast(c, fmt.Sprintf("%s has joined the room", c.nick))
-	c.msg(fmt.Sprintf("welcome to %s", r.name))
+	c.msg(fmt.Sprintf("\nwelcome to %s\n", r.name))
+	c.msg("[" + now.Format("2006-Jan-02 03:04:05") + "][" + c.nick + "]:")
 }
 
 func (s *server) listRooms(c *client, args []string) {
@@ -107,7 +110,7 @@ func (s *server) msg(c *client, args []string) {
 	}
 
 	s.writeToFile(c.room, "["+now.Format("2006-Jan-02 03:04:05")+"]["+c.nick+"]: "+strings.Join(args, " "))
-	c.room.broadcast(c, "["+now.Format("2006-Jan-02 03:04:05")+"]["+c.nick+"]: "+strings.Join(args, " "))
+	c.room.broadcast(c, "\n["+now.Format("2006-Jan-02 03:04:05")+"]["+c.nick+"]: "+strings.Join(args, " "))
 }
 
 func (s *server) quit(c *client, args []string) {
