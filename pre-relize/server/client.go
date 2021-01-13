@@ -57,7 +57,7 @@ func (c *client) readInput() {
 				args:   args,
 			}
 		default:
-			if cmd[0] == '/' {
+			if (len(cmd) == 0) || (cmd[0] == '/') {
 				c.err(fmt.Errorf("unknown command: %s", cmd))
 			} else {
 				c.commands <- command{

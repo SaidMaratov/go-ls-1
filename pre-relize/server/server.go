@@ -67,12 +67,17 @@ func (s *server) join(c *client, args []string) {
 		r = &room{
 			name:    roomName,
 			members: make(map[net.Addr]*client),
+			history: roomName + ".txt",
 		}
+		r.createFile(r.history)
 		s.rooms[roomName] = r
 	}
 	r.members[c.conn.RemoteAddr()] = c
+
 	s.quitCurrentRoom(c)
 	c.room = r
+
+	s.writeToFile(c.room, c.nick+" has joined the room")
 	r.broadcast(c, fmt.Sprintf("%s has joined the room", c.nick))
 	c.msg(fmt.Sprintf("welcome to %s", r.name))
 }
@@ -94,7 +99,9 @@ func (s *server) msg(c *client, args []string) {
 		c.err(errors.New("You must join the room first"))
 		return
 	}
-	c.room.broadcast(c, c.nick+": "+strings.Join(args, " "))
+
+	s.writeToFile(c.room, "["+now.Format("2006-Jan-02 03:04:05")+"]["+c.nick+"]: "+strings.Join(args, " "))
+	c.room.broadcast(c, "["+now.Format("2006-Jan-02 03:04:05")+"]["+c.nick+"]: "+strings.Join(args, " "))
 }
 
 func (s *server) quit(c *client, args []string) {
@@ -135,6 +142,7 @@ func CreatePort(num string) {
 		//go handle(conn)
 
 	}
+	fmt.Println("Server is dead")
 }
 
 func handle(conn net.Conn) {
