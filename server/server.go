@@ -77,7 +77,7 @@ func (s *server) join(c *client, args []string) {
 
 	s.quitCurrentRoom(c)
 	c.room = r
-
+	c.msg(s.parseAndReturnHistory(c.room))
 	s.writeToFile(c.room, c.nick+" has joined the room")
 	r.broadcast(c, fmt.Sprintf("\n%s has joined the room", c.nick))
 	c.msg(fmt.Sprintf("\nwelcome to %s", r.name))

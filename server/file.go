@@ -2,6 +2,7 @@ package server
 
 import (
 	"fmt"
+	"io/ioutil"
 	"log"
 	"os"
 	"time"
@@ -38,4 +39,13 @@ func (s *server) writeToFile(r *room, msg string) {
 		log.Println(err.Error())
 	}
 	historyFile.Close()
+}
+
+func (s *server) parseAndReturnHistory(r *room) string {
+	dat, err := ioutil.ReadFile(r.name + ".txt")
+	if err != nil {
+		log.Println(err.Error())
+	}
+
+	return string(dat)
 }
