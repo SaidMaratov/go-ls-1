@@ -16,10 +16,9 @@ type client struct {
 
 func (c *client) readInput(s *server) {
 
-	fmt.Fprintf(c.conn, welcomeIcon+"\n"+"Manual:\n\n"+"/nick - nickname\n"+"/rooms - the list of available rooms\n"+"/join - to create a new room or join the available room\n"+"/quit - leave the server\n\n")
-	fmt.Fprintf(c.conn, "You are in the default room \"general\"!\n")
+	fmt.Fprintf(c.conn, welcomeIcon+"\n"+manual)
 	s.parseAndReturnHistory(c)
-	fmt.Fprintf(c.conn, "[ENTER YOUR NAME]:")
+	fmt.Fprintf(c.conn, "[Let's start]:")
 
 	for {
 		fmt.Sprint("[" + now.Format("2006-Jan-02 03:04:05") + "][" + c.nick + "]: ")

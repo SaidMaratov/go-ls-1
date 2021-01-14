@@ -18,8 +18,17 @@ const welcomeIcon = "" +
 	" |    `.       | `' \\Zq\n" +
 	"_)      \\.___.,|     .'\n" +
 	"\\____   )MMMMMP|   .'\n" +
-	"     `-'       `--'\n" +
-	reset
+	"     `-'       `--'\n\n" +
+	reset +
+	"Your default name is anonymous\n" +
+	"You are in the default room \"general\"!\n"
+
+const manual = "Manual:\n\n" +
+
+	"/nick [nickname] - create or change nickname\n" +
+	"/rooms - to list the available rooms\n" +
+	"/join [name of room] - to create a new room or join the available room\n" +
+	"/quit - to leave the server\n\n"
 
 const (
 	reset  = "\033[0m"
