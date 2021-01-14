@@ -25,12 +25,18 @@ func newServer() *server {
 
 func (s *server) newClient(conn net.Conn) {
 	log.Printf("new client has connected: %s", conn.RemoteAddr().String())
+	if len(s.rooms) == 0 {
+		r := s.createRoom("general")
+		s.rooms["general"] = r
+	}
 
 	c := &client{
 		conn:     conn,
 		nick:     "anonymous",
 		commands: s.commands,
 	}
+	s.rooms["general"].members[c.conn.RemoteAddr()] = c
+	c.room = s.rooms["general"]
 	c.readInput()
 }
 
@@ -55,8 +61,23 @@ func (s *server) nick(c *client, args []string) {
 		c.err(errors.New("Empty name is prohibited!"))
 		return
 	}
+	if !s.validateNickname(args[1]) {
+		c.err(errors.New("Please choose another nick, cause this one is exist!"))
+		return
+	}
 	c.nick = args[1]
 	c.msg(fmt.Sprintf(green+"all right, i will call you %s"+reset, c.nick))
+}
+
+func (s *server) validateNickname(name string) bool {
+	for _, r := range s.rooms {
+		for _, c := range r.members {
+			if name == c.nick {
+				return false
+			}
+		}
+	}
+	return true
 }
 
 func (s *server) join(c *client, args []string) {
@@ -80,13 +101,8 @@ func (s *server) join(c *client, args []string) {
 
 	r, ok := s.rooms[roomName]
 	if !ok {
-		r = &room{
-			name:    roomName,
-			members: make(map[net.Addr]*client),
-			history: roomName + ".txt",
-		}
-		r.createFile(r.history)
-		s.rooms[roomName] = r
+		s.rooms[roomName] = s.createRoom(roomName)
+		r = s.rooms[roomName]
 	}
 	r.members[c.conn.RemoteAddr()] = c
 

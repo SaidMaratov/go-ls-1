@@ -17,3 +17,13 @@ func (r *room) broadcast(sender *client, msg string) {
 		}
 	}
 }
+
+func (s *server) createRoom(roomName string) *room {
+	r := &room{
+		name:    roomName,
+		members: make(map[net.Addr]*client),
+		history: roomName + ".txt",
+	}
+	r.createFile(r.history)
+	return r
+}
