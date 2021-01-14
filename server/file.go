@@ -41,11 +41,12 @@ func (s *server) writeToFile(r *room, msg string) {
 	historyFile.Close()
 }
 
-func (s *server) parseAndReturnHistory(r *room) string {
-	dat, err := ioutil.ReadFile(r.name + ".txt")
+func (s *server) parseAndReturnHistory(c *client) {
+	dat, err := ioutil.ReadFile(c.room.name + ".txt")
 	if err != nil {
 		log.Println(err.Error())
 	}
 
-	return string(dat)
+	c.conn.Write(dat)
+	c.conn.Write([]byte("\n"))
 }

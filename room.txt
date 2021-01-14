@@ -1,6 +1,0 @@
-Room is created: 2021-Jan-14 10:59:00
-said has joined the room
-[2021-Jan-14 10:58:32][said]: hello
-[2021-Jan-14 10:58:32][said]: hi
-[2021-Jan-14 10:58:32][said]: hui
-samat has joined the room

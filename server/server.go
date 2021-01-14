@@ -77,10 +77,12 @@ func (s *server) join(c *client, args []string) {
 
 	s.quitCurrentRoom(c)
 	c.room = r
-	c.msg(s.parseAndReturnHistory(c.room))
+	if ok {
+		s.parseAndReturnHistory(c)
+	}
 	s.writeToFile(c.room, c.nick+" has joined the room")
 	r.broadcast(c, fmt.Sprintf("\n%s has joined the room", c.nick))
-	c.msg(fmt.Sprintf("\nwelcome to %s", r.name))
+	c.msg(fmt.Sprintf("welcome to %s", r.name))
 }
 
 func (s *server) listRooms(c *client, args []string) {
@@ -100,9 +102,14 @@ func (s *server) msg(c *client, args []string) {
 		c.err(errors.New("You must join the room first"))
 		return
 	}
+	if len(args) == 0 {
+		c.err(errors.New("Empty messages are prohibited!"))
+		return
+	}
 
 	s.writeToFile(c.room, "["+now.Format("2006-Jan-02 03:04:05")+"]["+c.nick+"]: "+strings.Join(args, " "))
 	c.room.broadcast(c, "\n["+now.Format("2006-Jan-02 03:04:05")+"]["+c.nick+"]: "+strings.Join(args, " "))
+	c.msg("")
 }
 
 func (s *server) quit(c *client, args []string) {
