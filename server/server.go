@@ -68,6 +68,11 @@ func (s *server) join(c *client, args []string) {
 
 	roomName := args[1]
 
+	if len(roomName) > 10 {
+		c.err(errors.New("Too much symbols! Try Again."))
+		return
+	}
+
 	if (c.room != nil) && (c.room.name == roomName) {
 		c.msg(fmt.Sprintf(green+"You are already in the %s"+reset, c.room.name))
 		return
