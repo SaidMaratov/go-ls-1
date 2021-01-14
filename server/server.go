@@ -24,6 +24,10 @@ func newServer() *server {
 }
 
 func (s *server) newClient(conn net.Conn) {
+	if !s.validateQuantity() {
+		fmt.Fprintln(conn, red+"The server is overload! Try later please!"+reset)
+		conn.Close()
+	}
 	log.Printf("new client has connected: %s", conn.RemoteAddr().String())
 	if len(s.rooms) == 0 {
 		r := s.createRoom("general")
@@ -38,6 +42,19 @@ func (s *server) newClient(conn net.Conn) {
 	s.rooms["general"].members[c.conn.RemoteAddr()] = c
 	c.room = s.rooms["general"]
 	c.readInput(s)
+}
+
+func (s *server) validateQuantity() bool {
+	cnt := 0
+	for _, room := range s.rooms {
+		for range room.members {
+			cnt++
+		}
+	}
+	if cnt >= 10 {
+		return false
+	}
+	return true
 }
 
 func (s *server) run() {
