@@ -74,7 +74,7 @@ func (c *client) readInput() {
 }
 
 func (c *client) err(err error) {
-	c.msg("ERR: " + err.Error())
+	c.msg(red + "ERR: " + err.Error() + reset)
 }
 
 func (c *client) msg(msg string) {

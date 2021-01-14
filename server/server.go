@@ -51,15 +51,25 @@ func (s *server) run() {
 	}
 }
 func (s *server) nick(c *client, args []string) {
+	if len(args) < 2 {
+		c.err(errors.New("Empty name is prohibited!"))
+		return
+	}
 	c.nick = args[1]
-	c.msg(fmt.Sprintf("all right, i will call you %s", c.nick))
+	c.msg(fmt.Sprintf(green+"all right, i will call you %s"+reset, c.nick))
 }
 
 func (s *server) join(c *client, args []string) {
+
+	if len(args) < 2 {
+		c.err(errors.New("Empty name of room is prohibited!"))
+		return
+	}
+
 	roomName := args[1]
 
 	if (c.room != nil) && (c.room.name == roomName) {
-		c.msg(fmt.Sprintf("You are already in the %s", c.room.name))
+		c.msg(fmt.Sprintf(green+"You are already in the %s"+reset, c.room.name))
 		return
 	}
 
@@ -81,20 +91,20 @@ func (s *server) join(c *client, args []string) {
 		s.parseAndReturnHistory(c)
 	}
 	s.writeToFile(c.room, c.nick+" has joined the room")
-	r.broadcast(c, fmt.Sprintf("\n%s has joined the room", c.nick))
-	c.msg(fmt.Sprintf("welcome to %s", r.name))
+	r.broadcast(c, fmt.Sprintf(green+"\n%s has joined the room"+reset, c.nick))
+	c.msg(fmt.Sprintf(green+"welcome to %s"+reset, r.name))
 }
 
 func (s *server) listRooms(c *client, args []string) {
 	if len(s.rooms) == 0 {
-		c.msg("There is no room here. Please create a room!")
+		c.msg(green + "There is no room here. Please create a room!" + reset)
 		return
 	}
 	var rooms []string
 	for name := range s.rooms {
 		rooms = append(rooms, name)
 	}
-	c.msg(fmt.Sprintf("available rooms are: %s", strings.Join(rooms, ", ")))
+	c.msg(fmt.Sprintf(green+"available rooms are: %s"+reset, strings.Join(rooms, ", ")))
 }
 
 func (s *server) msg(c *client, args []string) {
@@ -115,14 +125,14 @@ func (s *server) msg(c *client, args []string) {
 func (s *server) quit(c *client, args []string) {
 	log.Printf("client has disconnected: %s", c.conn.RemoteAddr().String())
 	s.quitCurrentRoom(c)
-	c.msg("You've leaved the server!")
+	c.msg(green + "You've leaved the server!" + reset)
 	c.conn.Close()
 }
 
 func (s *server) quitCurrentRoom(c *client) {
 	if c.room != nil {
 		delete(c.room.members, c.conn.RemoteAddr())
-		c.room.broadcast(c, fmt.Sprintf("\n%s has left the room", c.nick))
+		c.room.broadcast(c, fmt.Sprintf(green+"\n%s has left the room"+reset, c.nick))
 		s.writeToFile(c.room, c.nick+" has left the room")
 		c.room = &room{}
 	}

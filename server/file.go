@@ -47,6 +47,6 @@ func (s *server) parseAndReturnHistory(c *client) {
 		log.Println(err.Error())
 	}
 
-	c.conn.Write(dat)
+	c.conn.Write([]byte(cyan + string(dat) + reset))
 	c.conn.Write([]byte("\n"))
 }
