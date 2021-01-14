@@ -14,9 +14,12 @@ type client struct {
 	commands chan<- command
 }
 
-func (c *client) readInput() {
+func (c *client) readInput(s *server) {
 
-	fmt.Fprintf(c.conn, welcomeIcon+"\n"+"Manual:\n\n"+"/nick - nickname\n"+"/rooms - the list of available rooms\n"+"/join - to create a new room or join the available room\n"+"/quit - leave the server\n\n"+"[ENTER YOUR NAME]:")
+	fmt.Fprintf(c.conn, welcomeIcon+"\n"+"Manual:\n\n"+"/nick - nickname\n"+"/rooms - the list of available rooms\n"+"/join - to create a new room or join the available room\n"+"/quit - leave the server\n\n")
+	fmt.Fprintf(c.conn, "You are in the default room \"general\"!\n")
+	s.parseAndReturnHistory(c)
+	fmt.Fprintf(c.conn, "[ENTER YOUR NAME]:")
 
 	for {
 		fmt.Sprint("[" + now.Format("2006-Jan-02 03:04:05") + "][" + c.nick + "]: ")

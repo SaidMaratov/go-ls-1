@@ -37,7 +37,7 @@ func (s *server) newClient(conn net.Conn) {
 	}
 	s.rooms["general"].members[c.conn.RemoteAddr()] = c
 	c.room = s.rooms["general"]
-	c.readInput()
+	c.readInput(s)
 }
 
 func (s *server) run() {
