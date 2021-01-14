@@ -51,7 +51,7 @@ func (s *server) run() {
 	}
 }
 func (s *server) nick(c *client, args []string) {
-	if len(args) < 2 {
+	if len(args) < 2 || len(args[1]) == 0 {
 		c.err(errors.New("Empty name is prohibited!"))
 		return
 	}
@@ -61,7 +61,7 @@ func (s *server) nick(c *client, args []string) {
 
 func (s *server) join(c *client, args []string) {
 
-	if len(args) < 2 {
+	if len(args) < 2 || len(args[1]) == 0 {
 		c.err(errors.New("Empty name of room is prohibited!"))
 		return
 	}
